@@ -197,43 +197,39 @@ class _HomePageState extends State<HomePage> {
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) {
+                  final value = displayExOh[index];
+
+                  Color bgColor;
+                  Color borderColor;
+                  Color textColor;
+
+                  if (value == 'X') {
+                    bgColor = const Color(0xffdaedff);
+                    borderColor = AppColors.lightBlue;
+                    textColor = AppColors.lightBlue;
+                  } else if (value == 'O') {
+                    bgColor = const Color(0xffffe6e5);
+                    borderColor = AppColors.lightRed;
+                    textColor = AppColors.lightRed;
+                  } else {
+                    bgColor = Colors.transparent;
+                    borderColor = AppColors.lightGrey;
+                    textColor = Colors.transparent;
+                  }
                   return GestureDetector(
-                    onTap: () {
-                      _tapped(index);
-                    },
-                    child: filledBoxes == 0
-                        ? Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
-                                color: AppColors.lightGrey,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            decoration: BoxDecoration(
-                              color: ohTurn
-                                  ? Color(0xffffe6e5)
-                                  : Color(0xffdaedff),
-                              border: Border.all(
-                                width: 2,
-                                color: ohTurn
-                                    ? AppColors.lightRed
-                                    : AppColors.lightBlue,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                displayExOh[index],
-                                style: TextStyle(
-                                  color: ohTurn
-                                      ? AppColors.lightRed
-                                      : AppColors.lightBlue,
-                                  fontSize: 32,
-                                ),
-                              ),
-                            ),
-                          ),
+                    onTap: () => _tapped(index),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: bgColor,
+                        border: Border.all(width: 2, color: borderColor),
+                      ),
+                      child: Center(
+                        child: Text(
+                          value,
+                          style: TextStyle(fontSize: 32, color: textColor),
+                        ),
+                      ),
+                    ),
                   );
                 },
               ),
