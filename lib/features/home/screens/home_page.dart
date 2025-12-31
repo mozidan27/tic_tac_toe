@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tic_tac_toe/core/helper/figma_sizes.dart';
+import 'package:tic_tac_toe/core/utils/app_colors.dart';
+import 'package:tic_tac_toe/core/widgets/my_buttom_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -139,7 +142,7 @@ class _HomePageState extends State<HomePage> {
   //     textStyle: const TextStyle(color: Colors.black, letterSpacing: 3));
   static var myNewFontWhite = GoogleFonts.pressStart2p(
     textStyle: const TextStyle(
-      color: Colors.white,
+      color: Colors.black,
       letterSpacing: 3,
       fontSize: 15,
     ),
@@ -150,9 +153,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[800],
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+      backgroundColor: AppColors.white,
+      body: SafeArea(
         child: Column(
           children: [
             Expanded(
@@ -187,8 +189,11 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               flex: 3,
               child: GridView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 itemCount: 9,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: Figma.h(context, 15),
+                  mainAxisSpacing: Figma.w(context, 15),
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) {
@@ -196,37 +201,44 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       _tapped(index);
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFF616161)),
-                      ),
-                      child: Center(
-                        child: Text(
-                          displayExOh[index],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
+                    child: filledBoxes == 0
+                        ? Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: AppColors.lightGrey,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              color: ohTurn
+                                  ? Color(0xffffe6e5)
+                                  : Color(0xffdaedff),
+                              border: Border.all(
+                                width: 2,
+                                color: ohTurn
+                                    ? AppColors.lightRed
+                                    : AppColors.lightBlue,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                displayExOh[index],
+                                style: TextStyle(
+                                  color: ohTurn
+                                      ? AppColors.lightRed
+                                      : AppColors.lightBlue,
+                                  fontSize: 32,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                   );
                 },
               ),
             ),
-            Expanded(
-              child: Container(
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text('TIC TAC TOE', style: myNewFontWhite),
-                      const SizedBox(height: 10),
-                      Text('MOHAMED ZIDAN', style: myNewFontWhite),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            MyButtomWidget(text: "Go Back"),
           ],
         ),
       ),
