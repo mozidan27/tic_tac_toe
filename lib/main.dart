@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/screens/welcome_screen.dart';
+import 'package:tic_tac_toe/features/welcome_screen/screens/welcome_screen.dart';
 
 void main() {
   runApp(const TicTak());
