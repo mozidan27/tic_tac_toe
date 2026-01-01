@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tic_tac_toe/core/helper/figma_sizes.dart';
 import 'package:tic_tac_toe/core/utils/app_colors.dart';
 import 'package:tic_tac_toe/core/widgets/my_buttom_widget.dart';
@@ -104,7 +104,15 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return
+        // GestureDetector(
+        //   onTap: () {
+        //     _clearBoard();
+        //     Navigator.of(context).pop();
+        //   },
+        //   child: Text("winner is : $winner"),
+        // );
+        AlertDialog(
           title: Text('WINNER IS : $winner'),
           actions: [
             FloatingActionButton(
@@ -140,13 +148,14 @@ class _HomePageState extends State<HomePage> {
 
   // static var myNewFont = GoogleFonts.pressStart2p(
   //     textStyle: const TextStyle(color: Colors.black, letterSpacing: 3));
-  static var myNewFontWhite = GoogleFonts.pressStart2p(
-    textStyle: const TextStyle(
-      color: Colors.black,
-      letterSpacing: 3,
-      fontSize: 15,
-    ),
+  static var myNewFontWhite = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontFamily: "Reboto",
+    color: Colors.black,
+    letterSpacing: 3,
+    fontSize: 20,
   );
+
   int exScore = 0;
   int ohScore = 0;
   int filledBoxes = 0;
@@ -160,14 +169,15 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: Container(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(25),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Player X', style: myNewFontWhite),
+                          SvgPicture.asset("assets/x.svg"),
+                          SizedBox(height: 10),
                           Text(exScore.toString(), style: myNewFontWhite),
                         ],
                       ),
@@ -177,7 +187,9 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Player O', style: myNewFontWhite),
+                          SvgPicture.asset("assets/o.svg"),
+                          SizedBox(height: 10),
+
                           Text(ohScore.toString(), style: myNewFontWhite),
                         ],
                       ),
