@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tic_tac_toe/core/functions/custom_toast.dart';
 import 'package:tic_tac_toe/core/helper/figma_sizes.dart';
 import 'package:tic_tac_toe/core/utils/app_colors.dart';
 import 'package:tic_tac_toe/core/widgets/my_buttom_widget.dart';
@@ -13,13 +14,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void _tapped(int index) {
+    if (gameOver) return;
+
     setState(() {
       if (ohTurn && displayExOh[index] == '') {
         displayExOh[index] = 'O';
-        filledBoxes += 1;
+        filledBoxes++;
       } else if (!ohTurn && displayExOh[index] == '') {
         displayExOh[index] = 'X';
-        filledBoxes += 1;
+        filledBoxes++;
       }
       ohTurn = !ohTurn;
       _checkWinner();
@@ -27,123 +30,69 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkWinner() {
-    //check the first row
-    if (displayExOh[0] == displayExOh[1] &&
-        displayExOh[0] == displayExOh[2] &&
-        displayExOh[0] != '') {
-      _showWinDialog(displayExOh[0]);
+    List<List<int>> winPatterns = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
 
-      //check the 2d row
+    for (var pattern in winPatterns) {
+      String first = displayExOh[pattern[0]];
+      if (first != '' &&
+          first == displayExOh[pattern[1]] &&
+          first == displayExOh[pattern[2]]) {
+        _onWin(first);
+        return;
+      }
     }
-    if (displayExOh[3] == displayExOh[4] &&
-        displayExOh[3] == displayExOh[5] &&
-        displayExOh[3] != '') {
-      _showWinDialog(displayExOh[3]);
-      //check the 3rd row
-    }
-    if (displayExOh[6] == displayExOh[7] &&
-        displayExOh[6] == displayExOh[8] &&
-        displayExOh[6] != '') {
-      _showWinDialog(displayExOh[6]);
-      //check the first column
-    }
-    if (displayExOh[0] == displayExOh[3] &&
-        displayExOh[0] == displayExOh[6] &&
-        displayExOh[0] != '') {
-      _showWinDialog(displayExOh[0]);
-      //check the 2d column
-    }
-    if (displayExOh[1] == displayExOh[4] &&
-        displayExOh[1] == displayExOh[7] &&
-        displayExOh[1] != '') {
-      _showWinDialog(displayExOh[1]);
-      //check the 3rd column
-    }
-    if (displayExOh[2] == displayExOh[5] &&
-        displayExOh[2] == displayExOh[8] &&
-        displayExOh[2] != '') {
-      _showWinDialog(displayExOh[2]);
-      //check the diagonal
-    }
-    if (displayExOh[2] == displayExOh[4] &&
-        displayExOh[2] == displayExOh[6] &&
-        displayExOh[2] != '') {
-      _showWinDialog(displayExOh[2]);
-      //check the diagonal
-    }
-    if (displayExOh[0] == displayExOh[4] &&
-        displayExOh[0] == displayExOh[8] &&
-        displayExOh[0] != '') {
-      _showWinDialog(displayExOh[0]);
-    } else if (filledBoxes == 9) {
-      _showDrawDialog();
+
+    if (filledBoxes == 9) {
+      _showDrawSnackBar();
     }
   }
 
-  void _showDrawDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Draw'),
-          actions: [
-            FloatingActionButton(
-              onPressed: () {
-                _clearBoard();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Again'),
-            ),
-          ],
-        );
-      },
+  void _onWin(String win) {
+    setState(() {
+      gameOver = true;
+      winner = win;
+    });
+
+    if (win == 'X') {
+      exScore++;
+    } else {
+      ohScore++;
+    }
+    customToast(
+      meg: "Winner is $win 🎉💃🏻💃🏻",
+      backgroundColor: win == 'X' ? AppColors.lightBlue : AppColors.lightRed,
     );
   }
 
-  void _showWinDialog(String winner) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return
-        // GestureDetector(
-        //   onTap: () {
-        //     _clearBoard();
-        //     Navigator.of(context).pop();
-        //   },
-        //   child: Text("winner is : $winner"),
-        // );
-        AlertDialog(
-          title: Text('WINNER IS : $winner'),
-          actions: [
-            FloatingActionButton(
-              onPressed: () {
-                _clearBoard();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Again'),
-            ),
-          ],
-        );
-      },
-    );
-    if (winner == 'O') {
-      ohScore += 1;
-    } else if (winner == 'X') {
-      exScore += 1;
-    }
+  void _showDrawSnackBar() {
+    setState(() {
+      gameOver = true;
+      winner = null;
+    });
+
+    customToast(meg: 'Draw 🤝', backgroundColor: AppColors.darkestGrey);
   }
 
   void _clearBoard() {
     setState(() {
-      for (int i = 0; i < 9; i++) {
-        displayExOh[i] = '';
-      }
+      displayExOh = List.filled(9, '');
+      filledBoxes = 0;
     });
-    filledBoxes = 0;
   }
 
   bool ohTurn = true;
-  List<String> displayExOh = ['', '', '', '', '', '', '', '', ''];
+  // List<String> displayExOh = ['', '', '', '', '', '', '', '', ''];
+  List<String> displayExOh = List.filled(9, '');
+
   var myTextStyle = const TextStyle(color: Colors.white, fontSize: 30);
 
   // static var myNewFont = GoogleFonts.pressStart2p(
@@ -159,6 +108,9 @@ class _HomePageState extends State<HomePage> {
   int exScore = 0;
   int ohScore = 0;
   int filledBoxes = 0;
+  bool gameOver = false;
+  String? winner; // 'X' or 'O'
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,35 +119,39 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset("assets/x.svg"),
-                          SizedBox(height: 10),
-                          Text(exScore.toString(), style: myNewFontWhite),
-                        ],
-                      ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/x.svg",
+                          width: Figma.w(context, 40),
+                        ),
+                        SizedBox(height: 10),
+                        Text(exScore.toString(), style: myNewFontWhite),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset("assets/o.svg"),
-                          SizedBox(height: 10),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/o.svg",
+                          width: Figma.w(context, 40),
+                        ),
+                        SizedBox(height: 10),
 
-                          Text(ohScore.toString(), style: myNewFontWhite),
-                        ],
-                      ),
+                        Text(ohScore.toString(), style: myNewFontWhite),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -210,11 +166,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 itemBuilder: (context, index) {
                   final value = displayExOh[index];
-
                   Color bgColor;
                   Color borderColor;
+                  // ignore: unused_local_variable
                   Color textColor;
-
                   if (value == 'X') {
                     bgColor = const Color(0xffdaedff);
                     borderColor = AppColors.lightBlue;
@@ -236,17 +191,37 @@ class _HomePageState extends State<HomePage> {
                         border: Border.all(width: 2, color: borderColor),
                       ),
                       child: Center(
-                        child: Text(
-                          value,
-                          style: TextStyle(fontSize: 32, color: textColor),
-                        ),
+                        child: displayExOh[index] == ''
+                            ? const SizedBox()
+                            : SvgPicture.asset(
+                                displayExOh[index] == 'X'
+                                    ? 'assets/x.svg'
+                                    : 'assets/o.svg',
+                              ),
                       ),
                     ),
                   );
                 },
               ),
             ),
-            MyButtomWidget(text: "Go Back"),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: MyButtomWidget(
+                text: gameOver ? "Rematch" : "Go Back",
+                onTap: () {
+                  if (gameOver) {
+                    _clearBoard();
+                    setState(() {
+                      gameOver = false;
+                      winner = null;
+                      ohTurn = true;
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),

@@ -10,6 +10,6 @@ customToast({required String meg, Color? backgroundColor}) {
     timeInSecForIosWeb: 1,
     backgroundColor: backgroundColor,
     textColor: Colors.white,
-    fontSize: 16.0,
+    fontSize: 24.0,
   );
 }
