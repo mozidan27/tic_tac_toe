@@ -4,6 +4,7 @@ import 'package:tic_tac_toe/core/functions/custom_toast.dart';
 import 'package:tic_tac_toe/core/helper/figma_sizes.dart';
 import 'package:tic_tac_toe/core/utils/app_colors.dart';
 import 'package:tic_tac_toe/core/widgets/my_buttom_widget.dart';
+import 'package:tic_tac_toe/features/home/widgets/winner_score_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -95,8 +96,6 @@ class _HomePageState extends State<HomePage> {
 
   var myTextStyle = const TextStyle(color: Colors.white, fontSize: 30);
 
-  // static var myNewFont = GoogleFonts.pressStart2p(
-  //     textStyle: const TextStyle(color: Colors.black, letterSpacing: 3));
   static var myNewFontWhite = TextStyle(
     fontWeight: FontWeight.bold,
     fontFamily: "Reboto",
@@ -118,41 +117,11 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          "assets/x.svg",
-                          width: Figma.w(context, 40),
-                        ),
-                        SizedBox(height: 10),
-                        Text(exScore.toString(), style: myNewFontWhite),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          "assets/o.svg",
-                          width: Figma.w(context, 40),
-                        ),
-                        SizedBox(height: 10),
-
-                        Text(ohScore.toString(), style: myNewFontWhite),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            //!winner score
+            WinnerScoreWidget(
+              exScore: exScore,
+              myNewFontWhite: myNewFontWhite,
+              ohScore: ohScore,
             ),
             Expanded(
               flex: 3,
@@ -160,12 +129,14 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 itemCount: 9,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //!space between the boxs
                   crossAxisSpacing: Figma.h(context, 15),
                   mainAxisSpacing: Figma.w(context, 15),
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) {
                   final value = displayExOh[index];
+                  //!color boxs checker
                   Color bgColor;
                   Color borderColor;
                   // ignore: unused_local_variable
@@ -191,6 +162,7 @@ class _HomePageState extends State<HomePage> {
                         border: Border.all(width: 2, color: borderColor),
                       ),
                       child: Center(
+                        //!replacing the text with the icons
                         child: displayExOh[index] == ''
                             ? const SizedBox()
                             : SvgPicture.asset(
