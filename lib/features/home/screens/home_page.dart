@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
       winner = null;
     });
 
-    customToast(meg: 'Draw 🤝', backgroundColor: AppColors.darkestGrey);
+    customToast(meg: 'Game Over 🤝', backgroundColor: AppColors.darkestGrey);
   }
 
   void _clearBoard() {
